@@ -1,0 +1,9 @@
+kartya;Aragorn;2;5;tuz
+kartya;Sadan;3;8;levego
+kartya;Corky;50;50;fold
+kartya;Kira;3;9;levego
+kartya;Eowyn;2;6;viz
+kartya;ObiWan;2;5;fold
+kartya;TulArak;3;7;fold
+vezer;NagyVez;6;7;fold
+kazamata;nagy;TesztNagyKazamata;Aragorn,Eowyn,ObiWan,Kira,Sadan;NagyVez

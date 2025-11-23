@@ -1,0 +1,26 @@
+uj kartya;Aragorn;2;5;tuz
+uj kartya;Sadan;3;8;levego
+uj kartya;Corky;50;50;fold
+uj kartya;Kira;3;9;levego
+uj kartya;Eowyn;2;6;viz
+uj kartya;ObiWan;2;5;fold
+uj kartya;TulArak;3;7;fold
+
+uj vezer;NagyVez;TulArak;sebzes
+
+uj kazamata;nagy;TesztNagyKazamata;Aragorn,Eowyn,ObiWan,Kira,Sadan;NagyVez
+uj jatekos
+
+felvetel gyujtemenybe;Aragorn
+felvetel gyujtemenybe;Corky
+felvetel gyujtemenybe;Kira
+
+uj pakli;Corky,Aragorn,Kira
+
+export vilag;out.vilag_before.txt
+export jatekos;out.jatekos_before.txt
+
+harc;TesztNagyKazamata;out.harc_win_test.txt
+
+export vilag;out.vilag_after.txt
+export jatekos;out.jatekos_after.txt

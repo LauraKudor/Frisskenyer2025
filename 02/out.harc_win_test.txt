@@ -1,0 +1,29 @@
+harc kezdodik;TesztNagyKazamata
+
+1.kor;kazamata;kijatszik;Aragorn;2;5;tuz
+1.kor;jatekos;kijatszik;Corky;50;50;fold
+
+2.kor;kazamata;tamad;Aragorn;4;Corky;46
+2.kor;jatekos;tamad;Corky;100;Aragorn;0
+2.kor;kazamata;kijatszik;Eowyn;2;6;viz
+
+3.kor;kazamata;tamad;Eowyn;1;Corky;45
+3.kor;jatekos;tamad;Corky;25;Eowyn;0
+3.kor;kazamata;kijatszik;ObiWan;2;5;fold
+
+4.kor;kazamata;tamad;ObiWan;2;Corky;43
+4.kor;jatekos;tamad;Corky;50;ObiWan;0
+4.kor;kazamata;kijatszik;Kira;3;9;levego
+
+5.kor;kazamata;tamad;Kira;6;Corky;37
+5.kor;jatekos;tamad;Corky;100;Kira;0
+5.kor;kazamata;kijatszik;Sadan;3;8;levego
+
+6.kor;kazamata;tamad;Sadan;6;Corky;31
+6.kor;jatekos;tamad;Corky;100;Sadan;0
+6.kor;kazamata;kijatszik;NagyVez;6;7;fold
+
+7.kor;kazamata;tamad;NagyVez;6;Corky;25
+7.kor;jatekos;tamad;Corky;50;NagyVez;0
+
+jatekos nyert;Sadan

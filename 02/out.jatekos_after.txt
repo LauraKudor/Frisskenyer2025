@@ -1,0 +1,6 @@
+gyujtemeny;Aragorn;2;5;tuz
+gyujtemeny;Corky;50;50;fold
+gyujtemeny;Kira;3;9;levego
+gyujtemeny;Sadan;3;8;levego
+pakli;Corky
+pakli;Aragorn
