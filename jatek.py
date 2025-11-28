@@ -128,6 +128,7 @@ class Game:
         self.leaders: Dict[str, Leader] = {}
         self.dungeons: Dict[str, Dungeon] = {}
         self.player = Player()
+        self.nehezseg=0
 
     def add_world_card(self, name, damage, hp, ctype):
         c = Card(name, int(damage), int(hp), ctype)
@@ -169,8 +170,6 @@ class Game:
         return self.player.serialize()
 
     def run_battle(self, dungeon_name: str, test = True) -> List[str]:
-        # returns log lines
-        nehezseg=0
         if not test:
             nehezseg=int(input("nehezsegi szint (1-10) "))
         if dungeon_name not in self.dungeons:
@@ -339,6 +338,106 @@ class Game:
 
         return logs
 
+def export_jatekkornyezet(self, mode: str) -> List[str]:
+    """
+    mode = 'jatekmester' vagy 'jatekos'
+    Visszaad egy listát, soronként a fájl tartalmával.
+    """
+    lines = []
+
+    # WORLD CARDS
+    lines.append("# WORLD_CARDS")
+    for name, card in self.world_cards.items():
+        lines.append(f"{name};{card.col_damage};{card.col_hp};{card.type}")
+
+    # LEADERS
+    lines.append("")
+    lines.append("# LEADER_CARDS")
+    for name, leader in self.leaders.items():
+        lines.append(f"{name};{leader.col_damage};{leader.col_hp};{leader.type}")
+
+    # DUNGEONS
+    lines.append("")
+    lines.append("# DUNGEONS")
+    for d_name, d in self.dungeons.items():
+        simple = ",".join(d.simple_cards)
+        line = f"{d_name};{d.type};{d.level};{simple};{d.leader_name}"
+        lines.append(line)
+
+    if mode == "jatekos":
+        # PLAYER COLLECTION
+        lines.append("")
+        lines.append("# PLAYER_COLLECTION")
+        for name, card in self.player.collection.items():
+            lines.append(
+                f"{name};{card.damage};{card.hp};{card.type};col_damage={card.col_damage};col_hp={card.col_hp}"
+            )
+
+        # PLAYER DECK
+        lines.append("")
+        lines.append("# PLAYER_DECK")
+        lines.append(",".join(self.player.deck_order))
+
+    # META INFO
+    lines.append("")
+    lines.append("# META")
+    lines.append(f"mode={mode}")
+
+    return lines
+def save_jatekkornyezet(game, folder, filename, mode):
+    #save_jatekkornyezet(game, ".", f"jatekkornyezet_{nev}.txt", "jatekmester") ezt igy kell behivni!!
+    #save_jatekkornyezet(game, ".", f"jatekkornyezet_{nev}.txt", "jatekos")
+    lines = game.export_jatekkornyezet(mode)
+    outpath = os.path.join(folder, filename)
+
+    with open(outpath, "w", encoding="utf-8") as f:
+        for ln in lines:
+            f.write(ln + "\n")
+
+def import_jatekkornyezet(game, filepath):
+    section = None
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        for raw in f:
+            line = raw.strip()
+            if line == "":
+                continue
+
+            if line.startswith("#"):
+                section = line
+                continue
+
+            # WORLD CARDS
+            if section == "# WORLD_CARDS":
+                name, dmg, hp, typ = line.split(";")
+                game.add_world_card(name, int(dmg), int(hp), typ)
+
+            # LEADERS
+            elif section == "# LEADER_CARDS":
+                name, dmg, hp, typ = line.split(";")
+                game.add_leader_card(name, int(dmg), int(hp), typ)
+
+            # DUNGEONS
+            elif section == "# DUNGEONS":
+                name, typ, level, simples, leader = line.split(";")
+                simple_list = simples.split(",") if simples else []
+                game.add_dungeon(name, typ, int(level), simple_list, leader)
+
+            # PLAYER_COLLECTION
+            elif section == "# PLAYER_COLLECTION":
+                parts = line.split(";")
+                name, dmg, hp, typ = parts[:4]
+                col_dmg = int(parts[4].split("=")[1])
+                col_hp = int(parts[5].split("=")[1])
+                game.player.add_to_collection_custom(name, int(dmg), int(hp), typ, col_dmg, col_hp)
+
+            # PLAYER_DECK
+            elif section == "# PLAYER_DECK":
+                game.player.deck_order = line.split(",")
+
+            # META
+            elif section == "# META":
+                pass
 
 def process_test_folder(folder: str):
     game = Game()
