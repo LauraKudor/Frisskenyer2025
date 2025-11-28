@@ -338,106 +338,90 @@ class Game:
 
         return logs
 
-def export_jatekkornyezet(self, mode: str) -> List[str]:
-    """
-    mode = 'jatekmester' vagy 'jatekos'
-    Visszaad egy listát, soronként a fájl tartalmával.
-    """
-    lines = []
+    def export_jatekkornyezet(self, mode: str) -> List[str]:
+        lines = []
 
-    # WORLD CARDS
-    lines.append("# WORLD_CARDS")
-    for name, card in self.world_cards.items():
-        lines.append(f"{name};{card.col_damage};{card.col_hp};{card.type}")
+        # WORLD CARDS
+        for name, card in self.world_cards.items():
+            lines.append(f"kartya;{name};{card.col_damage};{card.col_hp};{card.type}")
 
-    # LEADERS
-    lines.append("")
-    lines.append("# LEADER_CARDS")
-    for name, leader in self.leaders.items():
-        lines.append(f"{name};{leader.col_damage};{leader.col_hp};{leader.type}")
+        # LEADER CARDS
+        for name, card in self.leaders.items():
+            lines.append(f"vezer;{name};{card.col_damage};{card.col_hp};{card.type}")
 
-    # DUNGEONS
-    lines.append("")
-    lines.append("# DUNGEONS")
-    for d_name, d in self.dungeons.items():
-        simple = ",".join(d.simple_cards)
-        line = f"{d_name};{d.type};{d.level};{simple};{d.leader_name}"
-        lines.append(line)
+        # DUNGEONS
+        for dname, d in self.dungeons.items():
+            simple = ",".join(d.simple_cards) if d.simple_cards else ""
+            leader = d.leader_name if d.leader_name else ""
+            reward = d.reward if d.reward else ""
+            lines.append(f"kazamata;{d.type};{dname};{simple};{leader};{reward}")
 
-    if mode == "jatekos":
         # PLAYER COLLECTION
-        lines.append("")
-        lines.append("# PLAYER_COLLECTION")
-        for name, card in self.player.collection.items():
-            lines.append(
-                f"{name};{card.damage};{card.hp};{card.type};col_damage={card.col_damage};col_hp={card.col_hp}"
-            )
+        if mode == "jatekos":
+            for name, card in self.player.collection.items():
+                lines.append(
+                    f"jatekoskartya;{name};{card.col_damage};{card.col_hp};{card.type}"
+                )
 
-        # PLAYER DECK
-        lines.append("")
-        lines.append("# PLAYER_DECK")
-        lines.append(",".join(self.player.deck_order))
+            # PLAYER DECK
+            deck = ",".join(self.player.deck_order)
+            lines.append(f"pakli;{deck}")
 
-    # META INFO
-    lines.append("")
-    lines.append("# META")
-    lines.append(f"mode={mode}")
+        return lines
 
-    return lines
+
 def save_jatekkornyezet(game, folder, filename, mode):
     #save_jatekkornyezet(game, ".", f"jatekkornyezet_{nev}.txt", "jatekmester") ezt igy kell behivni!!
     #save_jatekkornyezet(game, ".", f"jatekkornyezet_{nev}.txt", "jatekos")
     lines = game.export_jatekkornyezet(mode)
-    outpath = os.path.join(folder, filename)
 
-    with open(outpath, "w", encoding="utf-8") as f:
+    if not filename.endswith(".txt"):
+        filename += ".txt"
+
+    path = os.path.join(folder, filename)
+
+    with open(path, "w", encoding="utf-8") as f:
         for ln in lines:
             f.write(ln + "\n")
 
 def import_jatekkornyezet(game, filepath):
-    section = None
-
     with open(filepath, "r", encoding="utf-8") as f:
         for raw in f:
             line = raw.strip()
-            if line == "":
+            if not line:
                 continue
 
-            if line.startswith("#"):
-                section = line
-                continue
+            parts = line.split(";")
+            tag = parts[0]
 
-            # WORLD CARDS
-            if section == "# WORLD_CARDS":
-                name, dmg, hp, typ = line.split(";")
+            # kartya;Nev;DMG;HP;type
+            if tag == "kartya":
+                _, name, dmg, hp, typ = parts
                 game.add_world_card(name, int(dmg), int(hp), typ)
 
-            # LEADERS
-            elif section == "# LEADER_CARDS":
-                name, dmg, hp, typ = line.split(";")
+            # vezer;Nev;DMG;HP;type
+            elif tag == "vezer":
+                _, name, dmg, hp, typ = parts
                 game.add_leader_card(name, int(dmg), int(hp), typ)
 
-            # DUNGEONS
-            elif section == "# DUNGEONS":
-                name, typ, level, simples, leader = line.split(";")
-                simple_list = simples.split(",") if simples else []
-                game.add_dungeon(name, typ, int(level), simple_list, leader)
+            # kazamata;tipus;nev;cardlist;leader;reward
+            elif tag == "kazamata":
+                _, tipe, nev, cardlist, leader, reward = parts
+                simple_cards = cardlist.split(",") if cardlist else []
+                leader = leader if leader else None
+                reward = reward if reward else None
+                game.add_dungeon(nev, tipe, simple_cards, leader, reward)
 
-            # PLAYER_COLLECTION
-            elif section == "# PLAYER_COLLECTION":
-                parts = line.split(";")
-                name, dmg, hp, typ = parts[:4]
-                col_dmg = int(parts[4].split("=")[1])
-                col_hp = int(parts[5].split("=")[1])
-                game.player.add_to_collection_custom(name, int(dmg), int(hp), typ, col_dmg, col_hp)
+            # jatekoskartya;nev;damage;hp;type
+            elif tag == "jatekoskartya":
+                _, name, dmg, hp, typ = parts
+                game.player.add_to_collection(name, int(dmg), int(hp), typ)
 
-            # PLAYER_DECK
-            elif section == "# PLAYER_DECK":
-                game.player.deck_order = line.split(",")
+            # pakli;Arin,Liora...
+            elif tag == "pakli":
+                deck_string = parts[1]
+                game.player.deck_order = deck_string.split(",") if deck_string else []
 
-            # META
-            elif section == "# META":
-                pass
 
 def process_test_folder(folder: str):
     game = Game()
@@ -587,7 +571,6 @@ def run_ui():
             s = s[:-2]
             print(s)
         s = ''
-
     while True:
         print('A kalandod következő lépésének választásához írd be a válasznak a számát.')
         print('1. Harc \n2. Új pakli készítése \n3. Kilépés')
