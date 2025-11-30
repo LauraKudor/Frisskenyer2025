@@ -1,0 +1,28 @@
+kartya;Arin;2;5;fold
+kartya;Liora;2;4;levego
+kartya;Nerun;3;3;tuz
+kartya;Selia;2;6;viz
+kartya;Torak;3;4;fold
+kartya;Emera;2;5;levego
+kartya;Vorn;2;7;viz
+kartya;Kael;3;5;tuz
+kartya;Myra;2;6;fold
+kartya;Thalen;3;5;levego
+kartya;Isara;2;6;viz
+vezer;Lord Torak;Torak;sebzes
+vezer;Priestess Selia;Selia;eletero
+kazamata;egyszeru;Barlangi portya;Nerun;;sebzes
+kazamata;kis;Ősi Szentély;Arin,Emera,Selia;Lord Torak;eletero
+kazamata;nagy;A mélység királynője;Liora,Arin,Selia,Nerun,Torak;Priestess Sella;
+jatekoskartya;Arin;2;5;fold
+jatekoskartya;Liora;2;4;levego
+jatekoskartya;Selia;2;6;viz
+jatekoskartya;Nerun;3;3;tuz
+jatekoskartya;Torak;3;4;fold
+jatekoskartya;Emera;2;5;levego
+jatekoskartya;Kael;3;5;tuz
+jatekoskartya;Myra;2;6;fold
+jatekoskartya;Thalen;3;5;levego
+jatekoskartya;Isara;2;6;viz
+pakli;
+0
